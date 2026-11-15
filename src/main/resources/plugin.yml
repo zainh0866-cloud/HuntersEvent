@@ -1,0 +1,14 @@
+name: HuntersEvent
+version: 1.0.0
+main: me.custom.huntersevent.HuntersEvent
+api-version: '1.21'
+description: 100 Hunters vs 1 PvPer Event Plugin
+commands:
+  event:
+    description: Control the 100 Hunters event
+    usage: /event <runner|start|stage|bloodmoon|totemlimit|supplydrop|stop>
+    permission: huntersevent.admin
+permissions:
+  huntersevent.admin:
+    description: Allows controlling the Hunters Event
+    default: op
