@@ -157,14 +157,12 @@ public class HuntersEvent extends JavaPlugin implements Listener, CommandExecuto
         Player runner = Bukkit.getPlayer(runnerUUID);
         if (runner == null) return;
 
-        // Setup Runner
-        setMaxHealth(runner, 40.0); // 20 hearts
+        setMaxHealth(runner, 40.0);
         runner.setHealth(40.0);
         runner.setFoodLevel(20);
         runner.getInventory().clear();
         equipRunnerKit(runner);
 
-        // Setup Hunters
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (!p.getUniqueId().equals(runnerUUID)) {
                 aliveHunters.add(p.getUniqueId());
@@ -243,74 +241,4 @@ public class HuntersEvent extends JavaPlugin implements Listener, CommandExecuto
         if (block.getState() instanceof Chest chest) {
             Inventory inv = chest.getBlockInventory();
             inv.addItem(new ItemStack(Material.ENCHANTED_GOLDEN_APPLE, 2));
-            inv.addItem(new ItemStack(Material.TOTEM_OF_UNDYING, 1));
-            inv.addItem(new ItemStack(Material.ENDER_PEARL, 8));
-            inv.addItem(new ItemStack(Material.END_CRYSTAL, 16));
-            inv.addItem(new ItemStack(Material.OBSIDIAN, 32));
-        }
-
-        runner.getWorld().strikeLightningEffect(dropLoc);
-        Bukkit.broadcast(Component.text("SUPPLY DROP SPAWNED AT: X=" + dropLoc.getBlockX() + " Y=" + dropLoc.getBlockY() + " Z=" + dropLoc.getBlockZ(), NamedTextColor.AQUA));
-    }
-
-    private void startTasks() {
-        stopEventTasks();
-
-        // Compass tracking every 2 seconds
-        compassTask = new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (!eventRunning || runnerUUID == null) return;
-                Player runner = Bukkit.getPlayer(runnerUUID);
-                if (runner == null || !runner.isOnline()) return;
-
-                for (Player p : Bukkit.getOnlinePlayers()) {
-                    if (p.getUniqueId().equals(runnerUUID)) continue;
-                    for (ItemStack item : p.getInventory().getContents()) {
-                        if (item != null && item.getType() == Material.COMPASS) {
-                            if (item.getItemMeta() instanceof CompassMeta meta) {
-                                meta.setLodestone(runner.getLocation());
-                                meta.setLodestoneTracked(false);
-                                item.setItemMeta(meta);
-                            }
-                        }
-                    }
-                }
-            }
-        }.runTaskTimer(this, 0L, 40L);
-
-        // Scoreboard update every 1 second
-        scoreboardTask = new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (!eventRunning) return;
-                updateScoreboards();
-            }
-        }.runTaskTimer(this, 0L, 20L);
-    }
-
-    private void updateScoreboards() {
-        ScoreboardManager manager = Bukkit.getScoreboardManager();
-        Scoreboard board = manager.getNewScoreboard();
-        Objective obj = board.registerNewObjective("huntersevent", Criteria.DUMMY, Component.text("100 HUNTERS EVENT", NamedTextColor.RED));
-        obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-
-        Player runner = runnerUUID != null ? Bukkit.getPlayer(runnerUUID) : null;
-        String runnerName = runner != null ? runner.getName() : "None";
-        int used = runnerUUID != null ? totemsUsed.getOrDefault(runnerUUID, 0) : 0;
-
-        obj.getScore("§7----------------").setScore(7);
-        obj.getScore("§6Runner: §f" + runnerName).setScore(6);
-        obj.getScore("§cHunters Alive: §f" + aliveHunters.size()).setScore(5);
-        obj.getScore("§eRunner Kills: §f" + runnerKills).setScore(4);
-        obj.getScore("§bStage: §f" + currentStage + "/4").setScore(3);
-        obj.getScore("§dTotems Used: §f" + used + "/" + totemLimit).setScore(2);
-        obj.getScore("§4Blood Moon: §f" + (bloodMoonActive ? "ACTIVE" : "OFF")).setScore(1);
-
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            p.setScoreboard(board);
-        }
-    }
-
-    @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent
+            inv.addItem(new ItemStack(Material.TOT
